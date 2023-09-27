@@ -2,218 +2,206 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Random;
+import java.awt.Desktop;
+
 
 public class AdaP1 {
-    public static int Ncomp = 0;
-    public static int Nasig = 0;
+  public static int Ncomp = 0;
+  public static int Nasig = 0;
 
-    public static void main (String args[]) throws IOException{ 
-      int NcompTotales = 0;
-      int NasigTotales = 0;
-      int MediaNcomp = 0;
-      int MediaNasig = 0;
-
-    File file = new File("Resultado.csv");
-    FileWriter fw = new FileWriter(file);
+  public static void main(String args[]) throws IOException {
+    int tamVector = 10000;
+    int NcompTotales = 0;
+    int NasigTotales = 0;
+    int MediaNcomp = 0;
+    int MediaNasig = 0;
+    long timeElapsed = 0;
+    File csvOutputFile = new File("ResultadosP1.csv");
+    FileWriter fw = new FileWriter(csvOutputFile);
     BufferedWriter bw = new BufferedWriter(fw);
+    String header = "Tamaño,NumComp,NumAsign,TiempoEmpleado";
+    bw.write(header);
+    bw.newLine();
 
-        for(int i = 3; i <= 30; i++){
-          for(int j = 0; j <= 20; j++){
-            Ncomp = 0;
-            Nasig = 0;
-            int[] v = rellenarVector();
-            v = descolocarVector(v,v.length);
-            //Instant start = Instant.now();
-            quickSort(v,i);
-            //Instant finish = Instant.now();
-            //long timeElapsed = Duration.between(start, finish).toNanos();
-            NcompTotales = NcompTotales + Ncomp;
-            NasigTotales = NasigTotales + Nasig;
-        }
-        MediaNcomp = NcompTotales/20;
-        MediaNasig = NasigTotales/20;
-        bw.write(String.valueOf(i)+";"+String.valueOf(MediaNcomp)+";"+String.valueOf(MediaNasig));
-        bw.write("\n");
-        NcompTotales = 0;
-        NasigTotales = 0;
-        MediaNcomp = 0;
-        MediaNasig = 0;
+    for (int i = 1; i <= 10; i++) {
+      int n = tamVector * i;
+      for (int j = 0; j <= 20; j++) {
+        Ncomp = 0;
+        Nasig = 0;
+        int[] v = rellenarVector(n);
+        Instant start = Instant.now();
+        ordena1(v, v.length);
+        Instant finish = Instant.now();
+        timeElapsed = Duration.between(start, finish).toNanos();
+        NcompTotales = NcompTotales + Ncomp;
+        NasigTotales = NasigTotales + Nasig;
       }
-      bw.close();
-      System.out.println("COMPLETADO");
+      MediaNcomp = NcompTotales / 20;
+      MediaNasig = NasigTotales / 20;
+      bw.write(String.valueOf(n) + "," + String.valueOf(MediaNcomp) + "," + String.valueOf(MediaNasig) + ","
+          + String.valueOf(timeElapsed));
+      bw.newLine();
+      NcompTotales = 0;
+      NasigTotales = 0;
+      MediaNcomp = 0;
+      MediaNasig = 0;
+      timeElapsed = 0;
     }
-    public static void comp(int n){
-        Ncomp = Ncomp + n;
-    }
+    bw.close();
+    System.out.println("COMPLETADO");
 
-    public static void asig(int n){
-        Nasig = Nasig + n;
-    }
-
-
-
-    /**
-     * Metodo utilizado para llamar al algoritmo con su tamaño
-     * @param intArray Vector de ints desordenado
-     */
-    public static void quickSort(int[] intArray, int K) {
-        recQuickSort(intArray, 0, intArray.length - 1, K);
+    try {
+      if (!Desktop.isDesktopSupported())
+      {
+        System.out.println("not supported");
+        return;
       }
-    
-    /**
-     * Metodo quicksort que elige entre el metodo de insercion o el de mediana dependiendo del valor umbral
-     * @param intArray Vector de ints utilizado
-     * @param left Valor limite inferior del vector
-     * @param right Valor limite superior del vector
-     * @param K Umbral introducido por el usuario que indica el tamaño minimo del vector para realizar el metodo de insercion
-     */
-      public static void recQuickSort(int[] intArray, int left, int right, int K) {
-        int size = right - left + 1;
-        if (size <= K)
-          insertionSort(intArray, left, right);
-        else {
-          double median = medianOf3(intArray, left, right);
-          int partition = partitionIt(intArray, left, right, median);
-          recQuickSort(intArray, left, partition - 1,K);
-          recQuickSort(intArray, partition + 1, right,K);
-        }
-      }
-    
-
-      /**
-       * Metodo auxiliar que devuelve el valor de la mediana de 3 
-       * @param intArray Vector de ints del cual queremos averiguar la posicion de la mediana 
-       * @param left Valor limite inferior del vector
-       * @param right Valor limite superior del vector
-       * @return Valor int de la mediana de 3
-       */
-      public static int medianOf3(int[] intArray, int left, int right) {
-        int center = (left + right) / 2;
-    
-        if (intArray[left] > intArray[center])
-          swap(intArray, left, center);
-
-        if (intArray[left] > intArray[right])
-          swap(intArray, left, right);
-
-        if (intArray[center] > intArray[right])
-          swap(intArray, center, right);
+      Desktop desktop = Desktop.getDesktop();
+      if (csvOutputFile.exists())
+        desktop.open(csvOutputFile);
         
-        comp(3);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
-        swap(intArray, center, right - 1);
-        return intArray[right - 1];
-      }
-    
+  }
+  
+  /**
+   * Metodo de relleno del vector (rellena el vector con M elementos)
+   * 
+   * @return v (Vector de M elementos que contiene ints de 1 a M)
+   */
+  public static int[] rellenarVector(int n) {
+
+    int[] v = new Random().ints(n, 0, 2*n).toArray();
+    return v;
+
+  }
+
     /**
-     * Metodo utilizado para obtener el valor que se usará para encontrar el valor limite superior del nuevo vector particion
-     * @param intArray Vector de ints del cual buscamos obtener el valor
-     * @param left Valor limite inferior del vector 
-     * @param right Valor limite superior del vector    
-     * @param pivot Valor de la mediana de 3 
-     * @return Indice del valor limite superior del nuevo vector particion
-     */
-      public static int partitionIt(int[] intArray, int left, int right, double pivot) {
-        int leftPtr = left;
-        int rightPtr = right - 1;
-    
-        while (true) {
-          while (intArray[++leftPtr] < pivot)
-            comp(1);
-            ;
-          while (intArray[--rightPtr] > pivot)
-            comp(1);
-            ;
-          if (leftPtr >= rightPtr)
-            break;
-          else
-            swap(intArray, leftPtr, rightPtr);
+   * Metodo auxiliar empleado para imprimir el array
+   * 
+   * @param v Vector de ints que vamos a imprimir
+   */
+  public static void printArray(int v[]) {
+    System.out.print("[");
+    for (int i = 0; i < v.length - 1; i++) {
+      System.out.print(v[i] + ", ");
+    }
+    System.out.println(v[v.length - 1] + "]");
+  }
+
+
+  public static void comp(int n) {
+    Ncomp = Ncomp + n;
+  }
+
+  public static void asig(int n) {
+    Nasig = Nasig + n;
+  }
+
+  public static void ordena1(int v[], int tam) {
+    /* v con índices de 0 a tam-1 */
+    int h, r, i, j, w;
+    r = tam - 1;
+    h = 1;
+    while (h <= r / 9) {
+      h = 3 * h + 1;
+    }
+    while (h > 0) {
+      for (i = h; i <= r; i++) {
+        j = i;
+        w = v[i];
+        while ((j >= h) && (w < v[j - h])) {
+          comp(1);
+          asig(1);
+          v[j] = v[j - h];
+          j = j - h;
         }
-        swap(intArray, leftPtr, right - 1);
-        return leftPtr;
+        v[j] = w;
+        asig(2);
       }
-    
+      h = h / 3;
+    }
+  }
 
-        /**
-         * Metodo de insercion en el algoritmo Quicksort
-         * @param a Vector de ints
-         * @param low Valor limite inferior del vector
-         * @param high Valor limite superior del vector
-         */
-        private static void insertionSort(int a[], int low,int high)
-        {
-          for (int i = low; i < high; ++i) {
-              int key = a[i];
-              asig(1);
-              int j = i - 1;
-              while (j >= 0 && a[j] > key) {
-                  a[j + 1] = a[j];
-                  j = j - 1;
-                  comp(1);
-                  asig(1);
-              }
-              a[j + 1] = key;
-              asig(1);
-          }
+  void ordena2(int v[], int tam) {
+    /* v con índices de 0 a tam-1 */
+    boolean swapped = true;
+    int start = 0;
+    int end = tam;
+    while (swapped == true) {
+      swapped = false;
+      for (int i = start; i < end - 1; ++i) {
+        if (v[i] > v[i + 1]) {
+          int temp = v[i];
+          v[i] = v[i + 1];
+          v[i + 1] = temp;
+          swapped = true;
         }
-
-        /**
-         * Metodo auxiliar empleado para imprimir el array
-         * @param v Vector de ints que vamos a imprimir
-         */
-        public static void printArray(int v[]){
-            System.out.print("[");
-            for(int i = 0; i<v.length-1; i++ ){
-                System.out.print(v[i] + ", ");
-            }
-            System.out.println(v[v.length-1]+"]");
-        }
-    
-        /**
-         * Metodo de reorganizacion aleatoria del vector
-         * @param v Vector de ints  
-         * @param M Longitud del vector introducido (si M = v.lenght, se descoloca completamente || si M es v.length / 10 se descoloca un poco)
-         * @return
-         */
-        public static int[] descolocarVector(int[] v, int M){
-            Random rand = new Random();
-            for(int i=1; i<M; i++){
-                int x = rand.nextInt(M);
-                int y = rand.nextInt(M);
-                swapaux(v,x,y);
-            }
-            return v;
-        }
-    
-    /**
-     * Metodo de relleno del vector (rellena el vector con M elementos)
-     * @return v (Vector de M elementos que contiene ints de 1 a M)
-     */
-        public static int[] rellenarVector(){
-            int[] v = new int[100000];
-            for(int i = 0; i<100000;i++){
-                v[i] = i+1;
-            }
-            return v;
-        }
-    
-    /**
-     * Metodo auxiliar de intercambio de valores para aleatorizar el vector
-     * @param v Vector de ints que se busca aleatorizar    
-     * @param x Valor x aleatorio de acceso al vector 
-     * @param y Valor y aleatorio de acceso al vector
-     */
-        public static void swap(int[] v, int x, int y){
-            int temp = v[x];
-            v[x] = v[y];
-            v[y] = temp;
-            asig(3);
-        }
-
-        public static void swapaux(int[] v, int x, int y){
-          int temp = v[x];
-          v[x] = v[y];
-          v[y] = temp;
       }
+      if (swapped == false) {
+        break;
+      }
+      swapped = false;
+      end = end - 1;
+      for (int i = end - 1; i >= start; i--) {
+        if (v[i] > v[i + 1]) {
+          int temp = v[i];
+          v[i] = v[i + 1];
+          v[i + 1] = temp;
+          swapped = true;
+        }
+      }
+      start = start + 1;
+    }
+  }
+
+  void ordena3(int[] v, int tam) {
+    /* v con índices de 0 a tam-1 */
+    int w[] = new int[tam];
+    ordena3rec(v, w, 0, tam - 1);
+  }
+
+  void ordena3rec(int v[], int w[], int l, int r) {
+    if (l < r) {
+      int m = (l + r) / 2;
+      ordena3rec(v, w, l, m);
+      ordena3rec(v, w, m + 1, r);
+      int ia = l;
+      int ib = m + 1;
+      int ic = l;
+      while ((ia <= m) && (ib <= r)) {
+        if (v[ia] < v[ib]) {
+          w[ic] = v[ia];
+          ia++;
+          ic++;
+        } else {
+          w[ic] = v[ib];
+          ib++;
+          ic++;
+        }
+      }
+      while (ia <= m) {
+        w[ic] = v[ia];
+        ia++;
+        ic++;
+      }
+      while (ib <= r) {
+        w[ic] = v[ib];
+        ib++;
+        ic++;
+      }
+      for (int i = l; i <= r; i++) {
+        v[i] = w[i];
+      }
+    }
+  }
+
+
+
+
 }
