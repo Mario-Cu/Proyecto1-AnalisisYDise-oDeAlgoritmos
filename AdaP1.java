@@ -13,6 +13,7 @@ public class AdaP1 {
   public static int Nasig = 0;
 
   public static void main(String args[]) throws IOException {
+     System.out.println("---------------------INICIO-----------------------");
     int tamVector = 10000;
     int NcompTotales = 0;
     int NasigTotales = 0;
@@ -22,18 +23,33 @@ public class AdaP1 {
     File csvOutputFile = new File("ResultadosP1.csv");
     FileWriter fw = new FileWriter(csvOutputFile);
     BufferedWriter bw = new BufferedWriter(fw);
-    String header = "Tamaño,NumComp,NumAsign,TiempoEmpleado";
-    bw.write(header);
-    bw.newLine();
+    
 
+    // Se me ocurre usar un for (z ....) y un switch(z) para utilizar los 3 algoritmos y poder hacer todo con una sola ejecucion
+    // Habria que sacar muchas cosas a fuera, probar a ver si es mas sencillo 
+    for(int z = 1; z <= 3; z++){
+        System.out.println("--------------------- ALGORITMO: "+z+" -----------------------");
+        bw.write("ALGORITMO: " + z);
+        bw.newLine();
+        String header = "Tamaño,NumComp,NumAsign,TiempoEmpleado";
+        bw.write(header);
+        bw.newLine();
     for (int i = 1; i <= 10; i++) {
       int n = tamVector * i;
+       System.out.println("--------------------- N = "+n+" -----------------------");
       for (int j = 0; j <= 20; j++) {
         Ncomp = 0;
         Nasig = 0;
         int[] v = rellenarVector(n);
         Instant start = Instant.now();
-        ordena1(v, v.length);
+        switch(z){
+          case 1:
+          //ordena1(v, v.length);
+          case 2:
+          //ordena2(v, v.length);
+          case 3:
+          //ordena3(v, v.length);
+        }
         Instant finish = Instant.now();
         timeElapsed = Duration.between(start, finish).toNanos();
         NcompTotales = NcompTotales + Ncomp;
@@ -50,8 +66,10 @@ public class AdaP1 {
       MediaNasig = 0;
       timeElapsed = 0;
     }
+    bw.newLine();
+    }
     bw.close();
-    System.out.println("COMPLETADO");
+    System.out.println("---------------------COMPLETADO--------------------");
 
     try {
       if (!Desktop.isDesktopSupported())
@@ -128,7 +146,7 @@ public class AdaP1 {
     }
   }
 
-  void ordena2(int v[], int tam) {
+  static void ordena2(int v[], int tam) {
     /* v con índices de 0 a tam-1 */
     boolean swapped = true;
     int start = 0;
@@ -160,13 +178,13 @@ public class AdaP1 {
     }
   }
 
-  void ordena3(int[] v, int tam) {
+  static void ordena3(int[] v, int tam) {
     /* v con índices de 0 a tam-1 */
     int w[] = new int[tam];
     ordena3rec(v, w, 0, tam - 1);
   }
 
-  void ordena3rec(int v[], int w[], int l, int r) {
+  static void ordena3rec(int v[], int w[], int l, int r) {
     if (l < r) {
       int m = (l + r) / 2;
       ordena3rec(v, w, l, m);
