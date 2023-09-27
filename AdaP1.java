@@ -14,7 +14,7 @@ public class AdaP1 {
       int MediaNcomp = 0;
       int MediaNasig = 0;
 
-    File file = new File("Parte1.csv");
+    File file = new File("Resultado.csv");
     FileWriter fw = new FileWriter(file);
     BufferedWriter bw = new BufferedWriter(fw);
 
