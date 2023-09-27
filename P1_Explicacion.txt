@@ -1,0 +1,13 @@
+Caso promedio para cada uno de esos valores de tamaño -- Ejecutando el algoritmo 20 veces para cada tamaño
+Antes de ejecutarlo, llenar el vector de numeros aleatorios, usando una funcion random y rellenando el vector de numeros aleatorios.
+Buscar evitar valores repetidos en los vectores, el rango de valores en el vector debe ser grande (rango debe ser al menos de 1 a n valores. Pero si es mas lo evitas)
+Una vez tenemos los datos para los 3 algoritmos, compararlos pintandolos en una grafica por ejemplo
+Sacar la formula del coste, la constante que multiplica al valor de n (O(n) o lo que sea)
+Añadir contadores para las operaciones elementales y para el tiempo empleados
+Usar excel.
+
+
+
+Comparaciones 
+Asignaciones
+Tiempo
