@@ -7,86 +7,97 @@ import java.time.Instant;
 import java.util.Random;
 import java.awt.Desktop;
 
-
 public class AdaP1 {
-  public static int Ncomp = 0;
-  public static int Nasig = 0;
+  public static long Ncomp = 0;
+  public static long Nasig = 0;
 
   public static void main(String args[]) throws IOException {
-     System.out.println("---------------------INICIO-----------------------");
+    System.out.println("---------------------INICIO-----------------------");
     int tamVector = 10000;
-    int NcompTotales = 0;
-    int NasigTotales = 0;
-    int MediaNcomp = 0;
-    int MediaNasig = 0;
+    long NcompTotales = 0;
+    long NasigTotales = 0;
+    long MediaNcomp = 0;
+    long MediaNasig = 0;
     long timeElapsed = 0;
+    long timeElapseTotal = 0;
+    long MediaTimeElapsed = 0;
     File csvOutputFile = new File("ResultadosP1.csv");
     FileWriter fw = new FileWriter(csvOutputFile);
     BufferedWriter bw = new BufferedWriter(fw);
-    
 
-    // Se me ocurre usar un for (z ....) y un switch(z) para utilizar los 3 algoritmos y poder hacer todo con una sola ejecucion
-    // Habria que sacar muchas cosas a fuera, probar a ver si es mas sencillo 
-    for(int z = 1; z <= 3; z++){
-        System.out.println("--------------------- ALGORITMO: "+z+" -----------------------");
-        bw.write("ALGORITMO: " + z);
-        bw.newLine();
-        String header = "Tamaño,NumComp,NumAsign,TiempoEmpleado";
-        bw.write(header);
-        bw.newLine();
-    for (int i = 1; i <= 10; i++) {
-      int n = tamVector * i;
-       System.out.println("--------------------- N = "+n+" -----------------------");
-      for (int j = 0; j <= 20; j++) {
-        Ncomp = 0;
-        Nasig = 0;
-        int[] v = rellenarVector(n);
-        Instant start = Instant.now();
-        switch(z){
-          case 1:
-          ordena1(v, v.length);
-          case 2:
-          //ordena2(v, v.length);
-          case 3:
-          //ordena3(v, v.length);
-        }
-        Instant finish = Instant.now();
-        timeElapsed = Duration.between(start, finish).toNanos();
-        NcompTotales = NcompTotales + Ncomp;
-        NasigTotales = NasigTotales + Nasig;
-      }
-      MediaNcomp = NcompTotales / 20;
-      MediaNasig = NasigTotales / 20;
-      bw.write(String.valueOf(n) + "," + String.valueOf(MediaNcomp) + "," + String.valueOf(MediaNasig) + ","
-          + String.valueOf(timeElapsed));
+    // Se me ocurre usar un for (z ....) y un switch(z) para utilizar los 3
+    // algoritmos y poder hacer todo con una sola ejecucion
+    // Habria que sacar muchas cosas a fuera, probar a ver si es mas sencillo
+    // Añadir metodo externo para resetear las variables
+    for (int z = 1; z <= 3; z++) {
+      System.out.println("--------------------- ALGORITMO: " + z + " -----------------------");
+      bw.write("ALGORITMO: " + z);
       bw.newLine();
-      NcompTotales = 0;
-      NasigTotales = 0;
-      MediaNcomp = 0;
-      MediaNasig = 0;
-      timeElapsed = 0;
-    }
-    bw.newLine();
+      String header = "Tamaño,NumComp,NumAsign,TiempoEmpleado";
+      bw.write(header);
+      bw.newLine();
+      for (int i = 1; i <= 10; i++) {
+        int n = tamVector * i;
+        System.out.println("--------------------- N = " + n + " -----------------------");
+        for (int j = 0; j <= 20; j++) {
+          Ncomp = 0;
+          Nasig = 0;
+          timeElapsed = 0;
+          int[] v = rellenarVector(n);
+          Instant start = Instant.now();
+          switch (z) {
+            case 1:
+              ordena1(v, v.length);
+              break;
+            case 2:
+              ordena2(v, v.length);
+              break;
+            case 3:
+              ordena3(v, v.length);
+              break;
+          }
+          Instant finish = Instant.now();
+          timeElapsed = Duration.between(start, finish).toNanos();
+          NcompTotales = NcompTotales + Ncomp;
+          NasigTotales = NasigTotales + Nasig;
+          timeElapseTotal = timeElapseTotal + timeElapsed;
+        }
+        MediaNcomp = NcompTotales / 20;
+        MediaNasig = NasigTotales / 20;
+        MediaTimeElapsed = timeElapseTotal / 20;
+        bw.write(String.valueOf(n) + "," + String.valueOf(MediaNcomp) + "," + String.valueOf(MediaNasig) + ","
+            + String.valueOf(MediaTimeElapsed));
+        bw.newLine();
+        NcompTotales = 0;
+        NasigTotales = 0;
+        timeElapseTotal = 0;
+        MediaNcomp = 0;
+        MediaNasig = 0;
+        MediaTimeElapsed = 0;
+      }
+      bw.newLine();
+      bw.newLine();
+      bw.newLine();
+      bw.newLine();
     }
     bw.close();
     System.out.println("---------------------COMPLETADO--------------------");
 
     try {
-      if (!Desktop.isDesktopSupported())
-      {
+      if (!Desktop.isDesktopSupported()) {
         System.out.println("not supported");
         return;
       }
       Desktop desktop = Desktop.getDesktop();
       if (csvOutputFile.exists())
         desktop.open(csvOutputFile);
-        
+
     } catch (Exception e) {
       e.printStackTrace();
     }
 
   }
-  
+
   /**
    * Metodo de relleno del vector (rellena el vector con M elementos)
    * 
@@ -94,12 +105,12 @@ public class AdaP1 {
    */
   public static int[] rellenarVector(int n) {
 
-    int[] v = new Random().ints(n, 0, 2*n).toArray();
+    int[] v = new Random().ints(n, 0, 2 * n).toArray();
     return v;
 
   }
 
-    /**
+  /**
    * Metodo auxiliar empleado para imprimir el array
    * 
    * @param v Vector de ints que vamos a imprimir
@@ -111,7 +122,6 @@ public class AdaP1 {
     }
     System.out.println(v[v.length - 1] + "]");
   }
-
 
   public static void comp(int n) {
     Ncomp = Ncomp + n;
@@ -158,8 +168,10 @@ public class AdaP1 {
           int temp = v[i];
           v[i] = v[i + 1];
           v[i + 1] = temp;
+          asig(3);
           swapped = true;
         }
+        comp(1);
       }
       if (swapped == false) {
         break;
@@ -171,8 +183,10 @@ public class AdaP1 {
           int temp = v[i];
           v[i] = v[i + 1];
           v[i + 1] = temp;
+          asig(3);
           swapped = true;
         }
+        comp(1);
       }
       start = start + 1;
     }
@@ -197,29 +211,32 @@ public class AdaP1 {
           w[ic] = v[ia];
           ia++;
           ic++;
+          asig(1);
         } else {
           w[ic] = v[ib];
           ib++;
           ic++;
+          asig(1);
         }
+        comp(1);
       }
       while (ia <= m) {
         w[ic] = v[ia];
         ia++;
         ic++;
+        asig(1);
       }
       while (ib <= r) {
         w[ic] = v[ib];
         ib++;
         ic++;
+        asig(1);
       }
       for (int i = l; i <= r; i++) {
         v[i] = w[i];
+        asig(1);
       }
     }
   }
-
-
-
 
 }
