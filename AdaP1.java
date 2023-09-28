@@ -44,7 +44,7 @@ public class AdaP1 {
         Instant start = Instant.now();
         switch(z){
           case 1:
-          //ordena1(v, v.length);
+          ordena1(v, v.length);
           case 2:
           //ordena2(v, v.length);
           case 3:
