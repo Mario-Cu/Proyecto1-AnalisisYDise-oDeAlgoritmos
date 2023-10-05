@@ -24,11 +24,6 @@ public class AdaP1 {
     File csvOutputFile = new File("ResultadosP1.csv");
     FileWriter fw = new FileWriter(csvOutputFile);
     BufferedWriter bw = new BufferedWriter(fw);
-
-    // Se me ocurre usar un for (z ....) y un switch(z) para utilizar los 3
-    // algoritmos y poder hacer todo con una sola ejecucion
-    // Habria que sacar muchas cosas a fuera, probar a ver si es mas sencillo
-    // Añadir metodo externo para resetear las variables
     for (int z = 1; z <= 3; z++) {
       System.out.println("--------------------- ALGORITMO: " + z + " -----------------------");
       bw.write("ALGORITMO: " + z);
