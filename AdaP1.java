@@ -10,7 +10,7 @@ import java.awt.Desktop;
 public class AdaP1 {
   public static long Ncomp = 0;
   public static long Nasig = 0;
-
+ //COMENTAR EL CODIGO POR DIOS
   public static void main(String args[]) throws IOException {
     System.out.println("---------------------INICIO-----------------------");
     int tamVector = 10000;
@@ -77,7 +77,6 @@ public class AdaP1 {
     }
     bw.close();
     System.out.println("---------------------COMPLETADO--------------------");
-
     try {
       if (!Desktop.isDesktopSupported()) {
         System.out.println("not supported");
@@ -103,19 +102,6 @@ public class AdaP1 {
     int[] v = new Random().ints(n, 0, 2 * n).toArray();
     return v;
 
-  }
-
-  /**
-   * Metodo auxiliar empleado para imprimir el array
-   * 
-   * @param v Vector de ints que vamos a imprimir
-   */
-  public static void printArray(int v[]) {
-    System.out.print("[");
-    for (int i = 0; i < v.length - 1; i++) {
-      System.out.print(v[i] + ", ");
-    }
-    System.out.println(v[v.length - 1] + "]");
   }
 
   public static void comp(int n) {
