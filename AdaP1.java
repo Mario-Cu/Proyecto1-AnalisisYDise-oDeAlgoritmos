@@ -10,9 +10,10 @@ import java.awt.Desktop;
 public class AdaP1 {
   public static long Ncomp = 0;
   public static long Nasig = 0;
- //COMENTAR EL CODIGO POR DIOS
+
   public static void main(String args[]) throws IOException {
     System.out.println("---------------------INICIO-----------------------");
+    //Inicializamos las variable utilizadas
     int tamVector = 10000;
     long NcompTotales = 0;
     long NasigTotales = 0;
@@ -24,17 +25,17 @@ public class AdaP1 {
     File csvOutputFile = new File("ResultadosP1.csv");
     FileWriter fw = new FileWriter(csvOutputFile);
     BufferedWriter bw = new BufferedWriter(fw);
-    for (int z = 1; z <= 3; z++) {
+    for (int z = 1; z <= 3; z++) { //El primer bucle solo selecciona el algoritmo que se va a ejecutar
       System.out.println("--------------------- ALGORITMO: " + z + " -----------------------");
       bw.write("ALGORITMO: " + z);
       bw.newLine();
       String header = "Tamaño,NumComp,NumAsign,TiempoEmpleado";
       bw.write(header);
       bw.newLine();
-      for (int i = 1; i <= 10; i++) {
+      for (int i = 1; i <= 10; i++) { //El segundo bucle sirve para hacer un vector 10000 veces mas grande que el anterior
         int n = tamVector * i;
         System.out.println("--------------------- N = " + n + " -----------------------");
-        for (int j = 0; j <= 20; j++) {
+        for (int j = 0; j <= 20; j++) { //El tercer bucle crea un vector cada vez de tamaño i*10000 y ejecuta el algoritmo seleccionado en el bucle z
           Ncomp = 0;
           Nasig = 0;
           timeElapsed = 0;
@@ -57,12 +58,14 @@ public class AdaP1 {
           NasigTotales = NasigTotales + Nasig;
           timeElapseTotal = timeElapseTotal + timeElapsed;
         }
+        //Realizamos las medias de los valores y las colocamos en el .csv
         MediaNcomp = NcompTotales / 20;
         MediaNasig = NasigTotales / 20;
         MediaTimeElapsed = timeElapseTotal / 20;
         bw.write(String.valueOf(n) + "," + String.valueOf(MediaNcomp) + "," + String.valueOf(MediaNasig) + ","
             + String.valueOf(MediaTimeElapsed));
         bw.newLine();
+        //Reiniciamos las variables para una nueva comprobacion 
         NcompTotales = 0;
         NasigTotales = 0;
         timeElapseTotal = 0;
@@ -77,6 +80,8 @@ public class AdaP1 {
     }
     bw.close();
     System.out.println("---------------------COMPLETADO--------------------");
+    
+    //Si se puede, se abre directamente el archivo .csv en Excel
     try {
       if (!Desktop.isDesktopSupported()) {
         System.out.println("not supported");
